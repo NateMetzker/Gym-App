@@ -2,6 +2,15 @@
 
 :root {
   color-scheme: light dark;
+  --chart-line-1: #0d9488;
+  --chart-line-2: #7e14ff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --chart-line-1: #2dd4bf;
+    --chart-line-2: #22d3ee;
+  }
 }
 
 html, body, #root {
@@ -10,11 +19,59 @@ html, body, #root {
 
 body {
   margin: 0;
+  background: #fff;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #08090b;
+  }
 }
 
 /* Respect iOS safe areas when installed fullscreen */
 #root {
   padding-top: env(safe-area-inset-top);
+}
+
+/* Ambient background glow — dark mode only, purely decorative so empty
+   space reads as an atmospheric canvas rather than a blank void. */
+.ambient-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ambient-glow::before,
+.ambient-glow::after {
+  content: '';
+  position: absolute;
+  width: 30rem;
+  height: 30rem;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ambient-glow::before {
+    opacity: 0.22;
+    background: radial-gradient(circle, #2dd4bf, transparent 70%);
+    top: -9rem;
+    left: -8rem;
+  }
+  .ambient-glow::after {
+    opacity: 0.16;
+    background: radial-gradient(circle, #0d9488, transparent 70%);
+    bottom: -10rem;
+    right: -9rem;
+  }
+
+  /* Give chart lines a soft glow to match the ambient theme. */
+  .recharts-line-curve {
+    filter: drop-shadow(0 0 6px rgba(45, 212, 191, 0.55));
+  }
 }

@@ -166,8 +166,15 @@ function ExerciseLogger({
 
   const sessionVol = sessionSets ? sessionSets.reduce((sum, s) => sum + setVolume(s), 0) : 0
 
+  // Clone the baseline so this check doesn't consume the state the render loop below needs.
+  const prBaseline = { bestWeight: prState.bestWeight, bestWeightByReps: new Map(prState.bestWeightByReps) }
+  const hasSessionPr = (sessionSets ?? []).some((s) => {
+    const { isWeightPr, isRepPr } = checkAndUpdatePr(prBaseline, s)
+    return isWeightPr || isRepPr
+  })
+
   return (
-    <Card>
+    <Card glow={hasSessionPr}>
       <div className="mb-2 flex items-center justify-between">
         <h3 className="font-medium">{exercise.name}</h3>
         {sessionVol > 0 && <span className="text-xs text-neutral-400">{sessionVol} vol</span>}

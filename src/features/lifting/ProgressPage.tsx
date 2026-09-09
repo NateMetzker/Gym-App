@@ -104,31 +104,31 @@ function ExerciseProgress({ exerciseId }: { exerciseId: string }) {
 
   return (
     <div className="space-y-4">
-      <Card>
+      <Card glow>
         <p className="mb-2 text-xs font-medium text-neutral-500">Best set weight over time</p>
-        <div className="h-40">
+        <div className="h-48">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-neutral-200 dark:stroke-neutral-800" />
               <XAxis dataKey="date" tick={{ fontSize: 10 }} />
               <YAxis tick={{ fontSize: 10 }} />
               <Tooltip />
-              <Line type="monotone" dataKey="weight" stroke="#0d9488" strokeWidth={2} dot={{ r: 3 }} />
+              <Line type="monotone" dataKey="weight" stroke="var(--chart-line-1)" strokeWidth={2} dot={{ r: 3 }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
       </Card>
 
-      <Card>
+      <Card glow>
         <p className="mb-2 text-xs font-medium text-neutral-500">Volume over time</p>
-        <div className="h-40">
+        <div className="h-48">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-neutral-200 dark:stroke-neutral-800" />
               <XAxis dataKey="date" tick={{ fontSize: 10 }} />
               <YAxis tick={{ fontSize: 10 }} />
               <Tooltip />
-              <Line type="monotone" dataKey="volume" stroke="#7e14ff" strokeWidth={2} dot={{ r: 3 }} />
+              <Line type="monotone" dataKey="volume" stroke="var(--chart-line-2)" strokeWidth={2} dot={{ r: 3 }} />
             </LineChart>
           </ResponsiveContainer>
         </div>

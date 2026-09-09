@@ -1,9 +1,22 @@
 import type { ButtonHTMLAttributes, InputHTMLAttributes, LabelHTMLAttributes, ReactNode } from 'react'
 
-export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
+export function Card({
+  children,
+  className = '',
+  glow = false,
+}: {
+  children: ReactNode
+  className?: string
+  /** Featured-card treatment: a soft teal glow border/shadow in dark mode, for the one or two things per screen that deserve emphasis. */
+  glow?: boolean
+}) {
   return (
     <div
-      className={`rounded-[20px] border border-neutral-200/70 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-12px_rgba(0,0,0,0.08)] dark:border-neutral-800/70 dark:bg-neutral-900 dark:shadow-[0_1px_2px_rgba(0,0,0,0.2),0_8px_24px_-12px_rgba(0,0,0,0.4)] ${className}`}
+      className={`rounded-[20px] border border-neutral-200/70 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-12px_rgba(0,0,0,0.08)] dark:bg-neutral-900 ${
+        glow
+          ? 'dark:border-teal-500/25 dark:shadow-[0_0_50px_-14px_rgba(45,212,191,0.45)]'
+          : 'dark:border-neutral-800/70 dark:shadow-[0_1px_2px_rgba(0,0,0,0.2),0_8px_24px_-12px_rgba(0,0,0,0.4)]'
+      } ${className}`}
     >
       {children}
     </div>
@@ -14,7 +27,7 @@ type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-teal-600 text-white shadow-sm shadow-teal-900/10 active:bg-teal-700 disabled:bg-neutral-200 disabled:text-neutral-400 disabled:shadow-none dark:disabled:bg-neutral-800 dark:disabled:text-neutral-600',
+    'bg-teal-600 text-white shadow-sm shadow-teal-900/10 active:bg-teal-700 disabled:bg-neutral-200 disabled:text-neutral-400 disabled:shadow-none dark:shadow-[0_0_20px_-4px_rgba(45,212,191,0.55)] dark:disabled:bg-neutral-800 dark:disabled:text-neutral-600 dark:disabled:shadow-none',
   secondary:
     'bg-neutral-100 text-neutral-900 active:bg-neutral-200 disabled:text-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:active:bg-neutral-700',
   ghost: 'bg-transparent text-teal-700 active:bg-teal-50 dark:text-teal-400 dark:active:bg-neutral-800',

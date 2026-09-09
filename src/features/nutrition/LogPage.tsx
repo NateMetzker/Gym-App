@@ -1,4 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks'
+import { Flame } from 'lucide-react'
 import { db, newId } from '../../db/db'
 import type { Combo, PantryItem } from '../../db/db'
 import { comboMacros, scaleMacros, sumMacros } from '../../lib/calc'
@@ -48,9 +49,17 @@ export function LogPage() {
     <div className="space-y-4">
       <h1 className="text-lg font-semibold">Today</h1>
 
-      <Card className="!bg-teal-600 text-white">
-        <p className="text-2xl font-semibold">{Math.round(totals.calories)} kcal</p>
-        <p className="text-sm text-teal-50">
+      <Card className="relative overflow-hidden !bg-teal-600 p-5 text-white dark:shadow-[0_0_60px_-12px_rgba(45,212,191,0.55)]">
+        <Flame
+          size={96}
+          strokeWidth={1}
+          className="pointer-events-none absolute -right-4 -top-4 text-white/10"
+        />
+        <p className="text-xs font-medium uppercase tracking-wide text-teal-50/80">Today</p>
+        <p className="mt-1 text-4xl font-bold tabular-nums">
+          {Math.round(totals.calories)} <span className="text-lg font-medium text-teal-50/90">kcal</span>
+        </p>
+        <p className="mt-1.5 text-sm text-teal-50">
           {Math.round(totals.protein)}g protein · {Math.round(totals.carbs)}g carbs · {Math.round(totals.fat)}g fat
         </p>
       </Card>

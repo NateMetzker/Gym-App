@@ -1,17 +1,26 @@
 import { useState } from 'react'
 import { Button, Card, Field, Input } from '../components/ui'
 import { getStoredApiKey, setApiKey } from '../lib/usda'
+import { getStoredAnthropicKey, setAnthropicKey } from '../lib/anthropic'
 import { db } from '../db/db'
 
 export function SettingsPage() {
   const [key, setKey] = useState(getStoredApiKey())
   const [saved, setSaved] = useState(false)
+  const [aiKey, setAiKey] = useState(getStoredAnthropicKey())
+  const [aiSaved, setAiSaved] = useState(false)
   const [confirmingReset, setConfirmingReset] = useState(false)
 
   function save() {
     setApiKey(key)
     setSaved(true)
     setTimeout(() => setSaved(false), 1500)
+  }
+
+  function saveAiKey() {
+    setAnthropicKey(aiKey)
+    setAiSaved(true)
+    setTimeout(() => setAiSaved(false), 1500)
   }
 
   async function resetAllData() {
@@ -45,6 +54,25 @@ export function SettingsPage() {
         </p>
         <Button className="mt-3 w-full" onClick={save}>
           {saved ? 'Saved' : 'Save key'}
+        </Button>
+      </Card>
+
+      <Card>
+        <Field label="Anthropic API key (for AI features)">
+          <Input
+            value={aiKey}
+            onChange={(e) => setAiKey(e.target.value)}
+            type="password"
+            placeholder="sk-ant-..."
+          />
+        </Field>
+        <p className="mt-2 text-xs text-neutral-400">
+          Powers flexible-unit food estimates, meal suggestions, and pasting in a split or past
+          workout history for AI to import. Get a free key at console.anthropic.com — usage costs
+          a small fraction of a cent per request. Stored only in this browser.
+        </p>
+        <Button className="mt-3 w-full" onClick={saveAiKey}>
+          {aiSaved ? 'Saved' : 'Save key'}
         </Button>
       </Card>
 

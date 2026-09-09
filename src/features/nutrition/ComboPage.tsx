@@ -5,6 +5,7 @@ import type { Combo } from '../../db/db'
 import { comboMacros } from '../../lib/calc'
 import { Button, Card, EmptyState } from '../../components/ui'
 import { ComboForm } from './ComboForm'
+import { AiMealSuggestions } from './AiMealSuggestions'
 
 export function ComboPage() {
   const combos = useLiveQuery(() => db.combos.orderBy('name').toArray(), [])
@@ -29,6 +30,8 @@ export function ComboPage() {
       {pantryItems.length === 0 && (
         <EmptyState title="Add pantry items first" hint="Combos are built from items in your pantry." />
       )}
+
+      {mode === 'idle' && pantryItems.length > 0 && <AiMealSuggestions pantryItems={pantryItems} />}
 
       {mode === 'add' && (
         <ComboForm pantryItems={pantryItems} onDone={() => setMode('idle')} onCancel={() => setMode('idle')} />

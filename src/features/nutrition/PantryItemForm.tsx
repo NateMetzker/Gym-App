@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import type { PantryItem, MacroSource } from '../../db/db'
 import { db, newId } from '../../db/db'
 import { searchUsda } from '../../lib/usda'
+import { estimateFoodMacros } from '../../lib/foodAi'
+import { MissingApiKeyError } from '../../lib/anthropic'
 import { Button, Field, Input, Pill } from '../../components/ui'
 
 type Draft = Omit<PantryItem, 'id' | 'createdAt'>
@@ -28,6 +31,8 @@ export function PantryItemForm({
   const [draft, setDraft] = useState<Draft>(existing ?? emptyDraft)
   const [looking, setLooking] = useState(false)
   const [lookupMsg, setLookupMsg] = useState<string | null>(null)
+  const [estimating, setEstimating] = useState(false)
+  const [needsApiKey, setNeedsApiKey] = useState(false)
 
   function set<K extends keyof Draft>(key: K, value: Draft[K]) {
     setDraft((d) => ({ ...d, [key]: value }))
@@ -63,6 +68,26 @@ export function PantryItemForm({
     }
   }
 
+  async function aiEstimate() {
+    if (!draft.name.trim()) return
+    setEstimating(true)
+    setNeedsApiKey(false)
+    setLookupMsg(null)
+    try {
+      const macros = await estimateFoodMacros(draft.name.trim(), draft.servingSize.trim() || '1 serving')
+      setDraft((d) => ({ ...d, ...macros, source: 'estimated' }))
+      setLookupMsg(`AI estimate for "${draft.servingSize || '1 serving'}" of ${draft.name}.`)
+    } catch (err) {
+      if (err instanceof MissingApiKeyError) {
+        setNeedsApiKey(true)
+      } else {
+        setLookupMsg(err instanceof Error ? err.message : 'Estimate failed.')
+      }
+    } finally {
+      setEstimating(false)
+    }
+  }
+
   async function save() {
     if (!draft.name.trim()) return
     if (existing) {
@@ -95,16 +120,27 @@ export function PantryItemForm({
 
       {lookupMsg && <p className="text-xs text-neutral-400">{lookupMsg}</p>}
 
-      <Field label="Serving size">
-        <Input
-          value={draft.servingSize}
-          onChange={(e) => {
-            set('servingSize', e.target.value)
-            markManual('manual')
-          }}
-          placeholder="e.g. 1 cup (240g)"
-        />
+      <Field label="Serving size (any unit — e.g. 2 tbsp, 1 medium, 6oz)">
+        <div className="flex gap-2">
+          <Input
+            value={draft.servingSize}
+            onChange={(e) => {
+              set('servingSize', e.target.value)
+              markManual('manual')
+            }}
+            placeholder="e.g. 2 tbsp"
+          />
+          <Button variant="secondary" onClick={aiEstimate} disabled={estimating || !draft.name.trim()}>
+            {estimating ? '...' : 'AI estimate'}
+          </Button>
+        </div>
       </Field>
+
+      {needsApiKey && (
+        <p className="text-xs text-amber-600 dark:text-amber-400">
+          Add an Anthropic API key in <Link to="/settings" className="underline">Settings</Link> to use AI estimates.
+        </p>
+      )}
 
       <div className="grid grid-cols-2 gap-3">
         <Field label="Calories">

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { db } from '../../db/db'
 import { dayKey, todayKey } from '../../lib/date'
 import { Card } from '../../components/ui'
@@ -47,19 +48,21 @@ export function CalendarPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <button
-          className="rounded-lg px-3 py-1.5 text-sm text-neutral-500 active:bg-neutral-100 dark:active:bg-neutral-800"
+          className="rounded-lg p-2 text-neutral-500 active:bg-neutral-100 dark:active:bg-neutral-800"
           onClick={() => setMonthCursor(new Date(year, month - 1, 1))}
+          aria-label="Previous month"
         >
-          ‹
+          <ChevronLeft size={18} />
         </button>
         <h1 className="text-lg font-semibold">
           {monthCursor.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
         </h1>
         <button
-          className="rounded-lg px-3 py-1.5 text-sm text-neutral-500 active:bg-neutral-100 dark:active:bg-neutral-800"
+          className="rounded-lg p-2 text-neutral-500 active:bg-neutral-100 dark:active:bg-neutral-800"
           onClick={() => setMonthCursor(new Date(year, month + 1, 1))}
+          aria-label="Next month"
         >
-          ›
+          <ChevronRight size={18} />
         </button>
       </div>
 

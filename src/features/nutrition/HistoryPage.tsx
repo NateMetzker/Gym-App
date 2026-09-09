@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { ChevronDown } from 'lucide-react'
 import { db } from '../../db/db'
 import type { LogEntry } from '../../db/db'
 import { sumMacros } from '../../lib/calc'
@@ -45,7 +46,10 @@ export function HistoryPage() {
               <button className="w-full text-left" onClick={() => setExpanded(isOpen ? null : day.key)}>
                 <div className="flex items-center justify-between">
                   <span className="font-medium">{formatDay(day.timestamp)}</span>
-                  <span className="text-xs text-neutral-400">{isOpen ? '▲' : '▼'}</span>
+                  <ChevronDown
+                    size={16}
+                    className={`text-neutral-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                  />
                 </div>
                 <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
                   {Math.round(totals.calories)} kcal · {Math.round(totals.protein)}g P ·{' '}

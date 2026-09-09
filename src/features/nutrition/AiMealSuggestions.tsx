@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Sparkles } from 'lucide-react'
 import type { PantryItem } from '../../db/db'
 import { db, newId } from '../../db/db'
 import { suggestMealsFromPantry, type ComboSuggestions } from '../../lib/foodAi'
@@ -47,8 +48,14 @@ export function AiMealSuggestions({ pantryItems }: { pantryItems: PantryItem[] }
 
   return (
     <div className="space-y-2">
-      <Button variant="secondary" onClick={run} disabled={loading || pantryItems.length === 0} className="w-full">
-        {loading ? 'Thinking…' : '✨ Suggest a meal with AI'}
+      <Button
+        variant="secondary"
+        onClick={run}
+        disabled={loading || pantryItems.length === 0}
+        className="flex w-full items-center justify-center gap-1.5"
+      >
+        <Sparkles size={16} className={loading ? 'animate-pulse' : ''} />
+        {loading ? 'Thinking…' : 'Suggest a meal with AI'}
       </Button>
 
       {needsApiKey && (

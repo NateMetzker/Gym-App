@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { ClipboardPaste } from 'lucide-react'
 import { parseWorkoutHistory, applyWorkoutHistoryImport } from '../../lib/liftingAi'
 import { MissingApiKeyError } from '../../lib/anthropic'
 import { todayKey } from '../../lib/date'
@@ -35,10 +36,11 @@ export function ImportWorkoutHistory() {
   if (!open) {
     return (
       <button
-        className="w-full rounded-xl border border-dashed border-neutral-300 py-3 text-sm text-neutral-500 dark:border-neutral-700"
+        className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-neutral-300 py-3 text-sm text-neutral-500 dark:border-neutral-700"
         onClick={() => setOpen(true)}
       >
-        📋 Upload past progress
+        <ClipboardPaste size={16} />
+        Upload past progress
       </button>
     )
   }

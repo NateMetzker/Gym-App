@@ -1,5 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk'
-import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod'
+import type Anthropic from '@anthropic-ai/sdk'
 import type { z } from 'zod'
 
 const MODEL = 'claude-opus-5'
@@ -20,10 +19,13 @@ export class MissingApiKeyError extends Error {
   }
 }
 
-function client(): Anthropic {
+// The SDK is a sizeable dependency only a handful of optional AI actions need,
+// so it's dynamically imported here rather than bundled into the app's main chunk.
+async function client(): Promise<Anthropic> {
   const apiKey = getStoredAnthropicKey()
   if (!apiKey) throw new MissingApiKeyError()
-  return new Anthropic({ apiKey, dangerouslyAllowBrowser: true })
+  const { default: AnthropicSdk } = await import('@anthropic-ai/sdk')
+  return new AnthropicSdk({ apiKey, dangerouslyAllowBrowser: true })
 }
 
 /** Sends `prompt` to Claude and parses the reply against `schema`. Throws MissingApiKeyError if no key is set in Settings. */
@@ -32,7 +34,11 @@ export async function askClaude<S extends z.ZodTypeAny>(
   schema: S,
   system?: string,
 ): Promise<z.infer<S>> {
-  const response = await client().messages.parse({
+  const [anthropic, { zodOutputFormat }] = await Promise.all([
+    client(),
+    import('@anthropic-ai/sdk/helpers/zod'),
+  ])
+  const response = await anthropic.messages.parse({
     model: MODEL,
     max_tokens: 4096,
     system,

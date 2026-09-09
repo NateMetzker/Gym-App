@@ -38,3 +38,9 @@ export function startOfDay(timestamp: number): number {
 export function todayKey(): string {
   return dayKey(Date.now())
 }
+
+/** Inverse of dayKey: turns "YYYY-MM-DD" into a local-noon timestamp for that date. */
+export function dateFromKey(key: string): number {
+  const [y, m, d] = key.split('-').map(Number)
+  return new Date(y, m - 1, d, 12, 0, 0).getTime()
+}

@@ -3,6 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db, newId } from '../../db/db'
 import type { SplitDay } from '../../db/db'
 import { Button, Card, EmptyState, Input } from '../../components/ui'
+import { PasteSplitImport } from './PasteSplitImport'
 
 export function SplitSetupPage() {
   const days = useLiveQuery(() => db.splitDays.orderBy('order').toArray(), [])
@@ -42,6 +43,8 @@ export function SplitSetupPage() {
           </Button>
         </div>
       </Card>
+
+      <PasteSplitImport />
 
       {days && days.length === 0 && (
         <EmptyState title="No split days yet" hint="Add a day like Push, Pull, or Legs to start." />
